@@ -20,14 +20,13 @@ requirements:
   host:
     - python
     - pip
-    - pytest
-    - numpy
-    - six
+    - setuptools
+    - wheel
+    - setuptools_scm
   run:
     - python
-    - pytest
+    - pytest >=4.6
     - numpy
-    - six
 
 test:
   imports:
