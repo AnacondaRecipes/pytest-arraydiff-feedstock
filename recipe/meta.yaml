@@ -28,8 +28,7 @@ requirements:
 # Worked locally, but not on CI
 # >   assert code == 0
 # E   assert 4 == 0
-{% set deselect_tests = "--deselect=gtests/test_pytest_arraydiff.py::test_fails" %}
-{% set deselect_tests = deselect_tests + " --deselect=tests/test_pytest_arraydiff.py::test_generate" %}
+{% set deselect_tests = " --deselect=tests/test_pytest_arraydiff.py::test_generate" %}
 {% set deselect_tests = deselect_tests + " --deselect=tests/test_pytest_arraydiff.py::test_default_format" %}
 # Test never finished on Windows
 {% set deselect_tests = deselect_tests + " --deselect=tests/test_pytest_arraydiff.py::test_fails" %}  # [win]
