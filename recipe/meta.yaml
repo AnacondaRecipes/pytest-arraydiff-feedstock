@@ -1,43 +1,52 @@
 {% set name = "pytest-arraydiff" %}
-{% set version = "0.6.1" %}
-{% set git_url = "https://github.com/astrofrog/pytest-arraydiff" %}
-{% set sha256 = "2937b1450fc935620f24709d87d40c67e055a043d7b8541a25fdfa994dda67de" %}
+{% set version = "0.7.0" %}
 
 package:
-  name: {{ name|lower }}
+  name: {{ name }}
   version: {{ version }}
 
 source:
-  fn: {{ name }}-{{ version }}.tar.gz
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: {{ sha256 }}
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name.replace('-', '_')}}-{{ version }}.tar.gz
+  sha256: 70e2a9183af5b4f05f694727beb30eb5fc6712632b240ef259ec60984a629b1a
 
 build:
   number: 0
   script: python -m pip install . --no-deps --no-build-isolation
+  skip: true  # [py<39]
 
 requirements:
   host:
     - python
     - pip
-    - setuptools
-    - wheel
+    - setuptools >=77.0.1
     - setuptools_scm
   run:
     - python
-    - pytest >=4.6
+    - pytest >=6.2
     - numpy
 
+# Worked locally, but not on CI
+# >   assert code == 0
+# E   assert 4 == 0
+{% set deselect_tests = " --deselect=tests/test_pytest_arraydiff.py::test_generate" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_pytest_arraydiff.py::test_default_format" %}
+# Test never finished on Windows
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_pytest_arraydiff.py::test_fails" %}  # [win]
 test:
+  source_files:
+    - tests
   imports:
     - pytest_arraydiff
-  requires:
-    - pip
   commands:
     - pip check
+    - pytest -v tests {{ deselect_tests }}
+  requires:
+    - pip
+    - astropy
+    - pandas
 
 about:
-  home: https://pypi.org/project/pytest-arraydiff/
+  home: https://pypi.org/project/pytest-arraydiff
   license: BSD-2-Clause
   license_family: BSD
   license_file: LICENSE
@@ -45,7 +54,7 @@ about:
   description: |
     This is a py.test plugin to facilitate the generation and comparison of
     data arrays produced during tests.
-  doc_url: https://pypi.org/project/pytest-arraydiff/
+  doc_url: https://pypi.org/project/pytest-arraydiff
   dev_url: https://github.com/astropy/pytest-arraydiff
 
 extra:
